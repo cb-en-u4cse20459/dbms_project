@@ -14,19 +14,27 @@ def create_connection(host_name,port_name,user_name,user_password,db_name):
     except Error as e:
         print("The error '{}' occurred".format(e))
     return connection
-connection =create_connection("localhost","3306","admin","password","boat")
-def exec_query(connection,database_query,mode):
+connection =create_connection("localhost","3306","admin","password","demo")
+def insertion_query(connection,database_query):
+    cursor=connection.cursor()
+    result = None
+    try:
+        cursor.execute(database_query)
+        result=cursor.fetchall()
+        connection.commit()
+        return result
+    except Error as e:
+        print("The error '{}' occurred".format(e))
+        return "error"
+def selection_query(connection,database_query):
     cursor=connection.cursor()
     result =None
     try:
-        print(cursor.execute(database_query))
-        if (mode=="selection"):        
-            result =cursor.fetchall()
-            return result
-        elif (mode=="insertion"):
-            connection.commit()
-            print("Task completed successfully")
+        cursor.execute(database_query)      
+        result =cursor.fetchall()
+        return result        
     except Error as e:
         print("The error '{}' occurred".format(e))
-create_users = "create table type(color varchar,sizer int);"
-print(exec_query(connection, create_users,"insertion"))
+        return "error"
+create_users = "show tables;"
+print(selection_query(connection, create_users))
